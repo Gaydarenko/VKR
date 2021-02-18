@@ -41,6 +41,8 @@ class Distributors:
     def __init__(self, path):
         self.cell = None
         self.month = None
+        self.debtors = set()
+        self.workbook = None
         self.path = path
         self.get_cell()
         self.is_valid_data_cell()
@@ -50,22 +52,29 @@ class Distributors:
         Получение содержимого ячейки А1 из файла.
         :return: None
         """
-        workbook = openpyxl.load_workbook(self.path)
-        table = workbook.active
+        self.workbook = openpyxl.load_workbook(self.path)
+        table = self.workbook.active
         self.cell = table.cell(row=1, column=1)
 
     def is_valid_data_cell(self):
         """
         Проверка первой ячейки таблицы. Содержимое ячейки должно быть в формате даты.
-        :return: bool
+        :return:
         """
         ...
 
-    def get_month(self):
+    def get_month(self) -> None:
         """
         Получение месяца в цифровом коде из содержимого ячейки.
         :return: None
         """
         self.month = self.cell.value.month
 
-
+    def get_debtors(self) -> None:
+        """
+        Формирование списка "должников". Критерием является незакрашенность ячейки с именем дистрибьютера.
+        :return: None
+        """
+        for row in self.workbook["Sheet"].iter_rows(min_row=1, max_col=1, max_row=3):
+            if row[0].fill.start_color.index == "00000000":
+                self.debtors.add(row.value)
