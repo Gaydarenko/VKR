@@ -4,7 +4,7 @@ import json
 import openpyxl
 
 
-class Check_files:
+class CheckFiles:
 
     def __init__(self):
         self.get_paths()
@@ -35,5 +35,37 @@ class Check_files:
             if not os.path.exists(self.paths[file]):
                 f"Реализовать вывод окна с ошибкой: Файл {file}.xlsx не найден"
 
-    # def read_from_xlsx(self):
+
+class Distributors:
+
+    def __init__(self, path):
+        self.cell = None
+        self.month = None
+        self.path = path
+        self.get_cell()
+        self.is_valid_data_cell()
+
+    def get_cell(self):
+        """
+        Получение содержимого ячейки А1 из файла.
+        :return: None
+        """
+        workbook = openpyxl.load_workbook(self.path)
+        table = workbook.active
+        self.cell = table.cell(row=1, column=1)
+
+    def is_valid_data_cell(self):
+        """
+        Проверка первой ячейки таблицы. Содержимое ячейки должно быть в формате даты.
+        :return: bool
+        """
+        ...
+
+    def get_month(self):
+        """
+        Получение месяца в цифровом коде из содержимого ячейки.
+        :return: None
+        """
+        self.month = self.cell.value.month
+
 
