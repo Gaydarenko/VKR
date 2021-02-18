@@ -1,0 +1,4 @@
+{
+"Distributors": "C:\\Abracadabra",
+"Contractors": "C:\\Avra_Kedavra"
+}
