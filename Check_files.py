@@ -4,6 +4,8 @@ import json
 import openpyxl
 import datetime as dt
 
+from message_error import MessageError as Me
+
 
 class CheckFiles:
 
@@ -21,14 +23,13 @@ class CheckFiles:
             with open('Data.txt', 'w', encoding='utf-8') as file:
                 self.paths = json.load(file)
         except json.decoder.JSONDecodeError:
-            ...
-            # TODO "Реализовать вывод окна с ошибкой: Некорретный формат файла Data.txt"
+            Me.message_window('Некорретный формат файла Data.txt')      # Написано под код с ветки,
+                                                                        # где этот метод статический
         except FileNotFoundError:
-            ...
-            # TODO"Реализовать вывод окна с ошибкой: Файл Data.txt не найден"
+            Me.message_window('Файл Data.txt не найден')    # Написано под код с ветки, где этот метод статический
+
         except Exception:
-            ...
-            # TODO "Реализовать вывод окна с ошибкой: Что-то пошло не так!!!"
+            Me.message_window('Что-то пошло не так!!!')     # Написано под код с ветки, где этот метод статический
 
     def check_files(self) -> None:
         """
@@ -37,8 +38,7 @@ class CheckFiles:
         """
         for file in self.paths:
             if not os.path.exists(self.paths[file]):
-                ...
-                # TODO f"Реализовать вывод окна с ошибкой: Файл {file}.xlsx не найден"
+                Me.message_window(f'Файл {file} не найден')     # Написано под код с ветки, где этот метод статический
 
 
 class Distributors:
