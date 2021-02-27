@@ -17,7 +17,7 @@ class MessageError:
         """
         window = tk.Tk()
         window.title("Ошибка!!!")
-        label = tk.Label(f"{self.text}", height=2)
+        label = tk.Label(text=f"{self.text}", height=2, width=40)
         label.pack()
         window.mainloop()
         sys_exit()
