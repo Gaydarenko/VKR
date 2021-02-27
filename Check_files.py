@@ -2,6 +2,7 @@ import os.path
 import json
 # install openpyxl, pandas
 import openpyxl
+import datetime as dt
 
 
 class CheckFiles:
@@ -78,3 +79,13 @@ class Distributors:
         for row in self.workbook["Sheet"].iter_rows(min_row=1, max_col=1, max_row=3):
             if row[0].fill.start_color.index == "00000000":
                 self.debtors.add(row.value)
+
+    def check_month_in_file(self) -> None:
+        """
+        Сравнение указанного в файле месяца с текущим. Если не совпадает, то закрасить весь файл в белый
+        :return: None
+        """
+        month = dt.date.today().month
+        if self.month != month:
+            "закрасить все в белый цвет"
+            ...
