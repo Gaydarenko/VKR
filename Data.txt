@@ -1,4 +1,1 @@
-{
-"Distributors": "C:\\Abracadabra",
-"Contractors": "C:\\Avra_Kedavra"
-}
+{"Distributors": "data\\Дистрибьюторыю.xlsx", "Contractors": "data\\Контрагенты.xlsx", "Reports": "data\\Отчеты.xlsx", "Database": "data\\pearl.xlsx"}

@@ -10,6 +10,7 @@ from message_error import MessageError as Me
 class CheckFiles:
 
     def __init__(self):
+        self.paths = None
         self.get_paths()
         self.check_files()
 
@@ -33,7 +34,7 @@ class CheckFiles:
 
     def check_files(self) -> None:
         """
-        Производится проверка наличия файлов Distributors.xlsx и
+        Производится проверка наличия файлов по указанным путям.
         :return: None
         """
         for file in self.paths:
