@@ -24,13 +24,11 @@ class CheckFiles:
             with open('Data.txt', 'r', encoding='utf-8') as file:
                 self.paths = json.load(file)
         except json.decoder.JSONDecodeError:
-            Me.message_window('Некорретный формат файла Data.txt')      # Написано под код с ветки,
-                                                                        # где этот метод статический
+            Me.message_window('Некорретный формат файла Data.txt')
         except FileNotFoundError:
-            Me.message_window('Файл Data.txt не найден')    # Написано под код с ветки, где этот метод статический
-
+            Me.message_window('Файл Data.txt не найден')
         except Exception:
-            Me.message_window('Что-то пошло не так!!!')     # Написано под код с ветки, где этот метод статический
+            Me.message_window('Что-то пошло не так!!!')
 
     def check_files(self) -> None:
         """
@@ -39,12 +37,12 @@ class CheckFiles:
         """
         for file in self.paths:
             if not os.path.exists(self.paths[file]):
-                Me.message_window(f'Файл {file} не найден')     # Написано под код с ветки, где этот метод статический
+                Me.message_window(f'Файл {file} не найден')
 
 
 class Distributors:
 
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.cell = None
         self.month = None
         self.debtors = set()
@@ -52,30 +50,24 @@ class Distributors:
         self.path = path
         self.get_cell()
         self.is_valid_data_cell()
+        self.check_month_in_file()
 
-    def get_cell(self):
+    def get_cell(self) -> None:
         """
-        Получение содержимого ячейки А1 из файла.
+        Получение содержимого ячейки А1 из файла формата xlsx.
         :return: None
         """
         self.workbook = openpyxl.load_workbook(self.path)
         table = self.workbook.active
         self.cell = table.cell(row=1, column=1)
 
-    def is_valid_data_cell(self):
+    def is_valid_data_cell(self) -> None:
         """
         Проверка первой ячейки таблицы. Содержимое ячейки должно быть в формате даты.
-        :return:
-        """
-        ...
-        # TODO
-
-    def get_month(self) -> None:
-        """
-        Получение месяца в цифровом коде из содержимого ячейки.
         :return: None
         """
-        self.month = self.cell.value.month
+        if not isinstance(self.cell.value, dt.datetime):
+            Me.message_window(f'В файле Дистрибьютеры.xlsx в ячейке А1 отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
 
     def get_debtors(self) -> None:
         """
@@ -91,8 +83,13 @@ class Distributors:
         Сравнение указанного в файле месяца с текущим. Если не совпадает, то закрасить весь файл в белый
         :return: None
         """
-        month = dt.date.today().month
-        if self.month != month:
-            "закрасить все в белый цвет"
-            ...
-        # TODO
+        current_month = dt.date.today().month
+        month_in_file = self.cell.value.month
+        if month_in_file != current_month:
+            wb = openpyxl.load_workbook(self.path)
+            sheet = wb[wb.sheetnames[0]]    # получение первого листа по его имени
+            rows = sheet.max_row
+            sheet_obj = wb.active
+            for cell_row in sheet_obj["A2": f"A{rows+1}"]:
+                cell_row[0].fill.fgColor.value = '00FFFFFF'
+            wb.save(self.path)
