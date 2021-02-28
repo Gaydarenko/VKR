@@ -21,7 +21,7 @@ class CheckFiles:
         :return: None
         """
         try:
-            with open('Data.txt', 'w', encoding='utf-8') as file:
+            with open('Data.txt', 'r', encoding='utf-8') as file:
                 self.paths = json.load(file)
         except json.decoder.JSONDecodeError:
             Me.message_window('Некорретный формат файла Data.txt')      # Написано под код с ветки,

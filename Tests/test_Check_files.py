@@ -1,5 +1,5 @@
 import unittest
-from shutil import copyfile, rmtree
+from shutil import copyfile, rmtree, move
 from openpyxl import load_workbook, Workbook
 import pandas as pd
 import random
@@ -8,10 +8,10 @@ import json
 import os
 import time
 
-import Check_files as cf
+from Check_files import CheckFiles as Cf
 
 
-BASIC_DATA = {"Distributors": r"data\Дистрибьюторыю.xlsx",
+BASIC_DATA = {"Distributors": r"data\Дистрибьюторы.xlsx",
               "Contractors": r"data\Контрагенты.xlsx",
               "Reports": r"data\Отчеты.xlsx",
               "Database": r"data\pearl.xlsx"}
@@ -35,13 +35,16 @@ class TestsCheckFiles(unittest.TestCase):
 
     def test_get_paths(self):
         create_files_for_test()
-        copyfile('../Data.txt', 'data/Temporary.txt')
-        with open('../Data.txt', 'w', encoding='utf-8') as file:
-            json.dump(BASIC_DATA, file, ensure_ascii=False)
+        move('../Data.txt', 'data/')
 
+        # test = Cf()
+        # self.assertRaises(FileNotFoundError, test.get_paths())
 
+        # with open('../Data.txt', 'w', encoding='utf-8') as file:
+        #     file.write('Testing.')
+        # self.assertRaises(json.decoder.JSONDecodeError, test.get_paths())
 
-        copyfile('data/Temporary.txt', '../Data.txt')
-        del_files_after_test()
+        move('data/Data.txt', '../')
+        # del_files_after_test()
 
 
