@@ -45,12 +45,13 @@ class Distributors:
     def __init__(self, path: str):
         self.cell = None
         self.month = None
-        self.debtors = set()
+        self.debtors = []
         self.workbook = None
         self.path = path
         self.get_cell()
         self.is_valid_data_cell()
         self.check_month_in_file()
+        self.get_debtors()
 
     def get_cell(self) -> None:
         """
@@ -74,9 +75,10 @@ class Distributors:
         Формирование списка "должников". Критерием является незакрашенность ячейки с именем дистрибьютера.
         :return: None
         """
-        for row in self.workbook["Sheet"].iter_rows(min_row=1, max_col=1, max_row=3):
-            if row[0].fill.start_color.index == "00000000":
-                self.debtors.add(row.value)
+        for row in self.workbook["Sheet"].iter_rows(min_row=2, max_col=1):
+            print(f"{row[0].fill.fgColor.value} - {row[0].value}")
+            if row[0].fill.fgColor.value in ["00FFFFFF", "00000000", 0]:
+                self.debtors.append(row[0].value)
 
     def check_month_in_file(self) -> None:
         """
