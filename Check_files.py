@@ -76,7 +76,7 @@ class Distributors:
         :return: None
         """
         for row in self.workbook["Sheet"].iter_rows(min_row=2, max_col=1):
-            print(f"{row[0].fill.fgColor.value} - {row[0].value}")
+            # print(f"{row[0].fill.fgColor.value} - {row[0].value}")
             if row[0].fill.fgColor.value in ["00FFFFFF", "00000000", 0]:
                 self.debtors.append(row[0].value)
 
