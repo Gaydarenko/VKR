@@ -27,7 +27,8 @@ class CheckFiles:
             Me.message_window('Некорретный формат файла Data.txt')
         except FileNotFoundError:
             Me.message_window('Файл Data.txt не найден')
-        except Exception:
+        except Exception as e:
+            print(e)
             Me.message_window('Что-то пошло не так!!!')
 
     def check_files(self) -> None:
@@ -76,7 +77,7 @@ class Distributors:
         :return: None
         """
         for row in self.workbook["Sheet"].iter_rows(min_row=2, max_col=1):
-            print(f"{row[0].fill.fgColor.value} - {row[0].value}")
+            # print(f"{row[0].fill.fgColor.value} - {row[0].value}")
             if row[0].fill.fgColor.value in ["00FFFFFF", "00000000", 0]:
                 self.debtors.append(row[0].value)
 
