@@ -1,8 +1,11 @@
+"""
+Проверка файлов
+"""
 import os.path
 import json
 # install openpyxl, pandas
-import openpyxl
 import datetime as dt
+import openpyxl
 
 from message_error import MessageError as Me
 
@@ -27,8 +30,8 @@ class CheckFiles:
             Me.message_window('Некорретный формат файла Data.txt')
         except FileNotFoundError:
             Me.message_window('Файл Data.txt не найден')
-        except Exception as e:
-            print(e)
+        except Exception as except_:
+            print(except_)
             Me.message_window('Что-то пошло не так!!!')
 
     def check_files(self) -> None:
@@ -69,11 +72,13 @@ class Distributors:
         :return: None
         """
         if not isinstance(self.cell.value, dt.datetime):
-            Me.message_window(f'В файле Дистрибьютеры.xlsx в ячейке А1 отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
+            Me.message_window('В файле Дистрибьютеры.xlsx в ячейке А1 '
+                              f'отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
 
     def get_debtors(self) -> None:
         """
-        Формирование списка "должников". Критерием является незакрашенность ячейки с именем дистрибьютера.
+        Формирование списка "должников".
+        Критерием является незакрашенность ячейки с именем дистрибьютера.
         :return: None
         """
         for row in self.workbook["Sheet"].iter_rows(min_row=2, min_col=2, max_col=2):
@@ -83,7 +88,8 @@ class Distributors:
 
     def check_month_in_file(self) -> None:
         """
-        Сравнение указанного в файле месяца с текущим. Если не совпадает, то закрасить весь файл в белый
+        Сравнение указанного в файле месяца с текущим.
+        Если не совпадает, то закрасить весь файл в белый
         :return: None
         """
         current_month = dt.date.today().month

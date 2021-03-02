@@ -1,8 +1,11 @@
+"""
+Работа с электронной почтой посредством Outlook.
+"""
 # install pywin32
-import win32com.client
 import os
 import datetime as dt
 from shutil import rmtree
+import win32com.client
 
 
 class Email:
@@ -32,10 +35,10 @@ class Email:
                         new_filename = attachment.FileName[:-1] + 'x'  # временная заплатка
                         path = os.path.join(os.getcwd(), self.output_dir, new_filename)
                         attachment.SaveAsFile(path)
-                except Exception:
-                    print("Ошибка на этапе сохранения файла - " + str(Exception))
-        except Exception:
-            print("Ошибка на этапе обработки email - " + str(Exception))
+                except Exception as except_:
+                    print("Ошибка на этапе сохранения файла - " + str(except_))
+        except Exception as except_:
+            print("Ошибка на этапе обработки email - " + str(except_))
 
     def email_filter(self, debtor_email: str) -> None:
         """
@@ -50,7 +53,8 @@ class Email:
 
     def run(self, debtors_email) -> None:
         """
-        Функция запускает фильтрацию emails и скачивание данных для каждого дистрибьютера, от которого ожидается доклад.
+        Функция запускает фильтрацию emails и скачивание данных для каждого дистрибьютера,
+        от которого ожидается доклад.
         :param debtors_email: Список email-ов адресатов, чьи письма нужно скачать.
         :return: None
         """

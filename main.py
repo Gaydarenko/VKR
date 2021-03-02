@@ -1,5 +1,8 @@
-from Check_files import CheckFiles, Distributors
+"""
+Программа выполненая в объеме ВКР
+"""
 from email import Email
+from Check_files import CheckFiles, Distributors
 
 
 checks = CheckFiles()   # получение путей и проверка наличия необходимых файлов
