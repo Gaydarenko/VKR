@@ -27,7 +27,8 @@ class CheckFiles:
             Me.message_window('Некорретный формат файла Data.txt')
         except FileNotFoundError:
             Me.message_window('Файл Data.txt не найден')
-        except Exception:
+        except Exception as e:
+            print(e)
             Me.message_window('Что-то пошло не так!!!')
 
     def check_files(self) -> None:
