@@ -76,7 +76,7 @@ class Distributors:
         Формирование списка "должников". Критерием является незакрашенность ячейки с именем дистрибьютера.
         :return: None
         """
-        for row in self.workbook["Sheet"].iter_rows(min_row=2, max_col=1):
+        for row in self.workbook["Sheet"].iter_rows(min_row=2, min_col=2, max_col=2):
             # print(f"{row[0].fill.fgColor.value} - {row[0].value}")
             if row[0].fill.fgColor.value in ["00FFFFFF", "00000000", 0]:
                 self.debtors.append(row[0].value)
@@ -96,3 +96,11 @@ class Distributors:
             for cell_row in sheet_obj["A2": f"A{rows+1}"]:
                 cell_row[0].fill.fgColor.value = '00FFFFFF'
             wb.save(self.path)
+
+    def set_month_in_file(self) -> None:
+        """
+        Запись текущей даты в файл.
+        :return: None
+        """
+        self.cell.value = dt.datetime.today()
+        self.workbook.save(self.path)

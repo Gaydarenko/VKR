@@ -8,3 +8,4 @@ distributors = Distributors(distributor_path)   # анализ содержим�
 debtors = distributors.debtors  # формирование списка интересующих дистрибьютеров
 # print(debtors)
 email = Email(debtors)  # скачивание прикрепленных файлов
+distributors.set_month_in_file()    # запись в файл текущей даты
