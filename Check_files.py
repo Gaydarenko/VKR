@@ -52,12 +52,12 @@ class Distributors:
         self.debtors = []
         self.workbook = None
         self.path = path
-        self.get_cell()
+        self.get_cell_a1()
         self.is_valid_data_cell()
         self.check_month_in_file()
         self.get_debtors()
 
-    def get_cell(self) -> None:
+    def get_cell_a1(self) -> None:
         """
         Получение содержимого ячейки А1 из файла формата xlsx.
         :return: None

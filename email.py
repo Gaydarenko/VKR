@@ -16,7 +16,7 @@ class Email:
         self.messages = None
         self.output_dir = 'email_files'     # название папки для скачанных файлов
 
-        received_dt = dt.datetime.today().replace(day=1, hour=0, minute=0, second=0)
+        received_dt = dt.datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         self.received_dt = received_dt.strftime("%m/%d/%Y %H:%M %p")
 
         self.run(debtors_email)
