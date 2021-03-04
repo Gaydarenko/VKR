@@ -1,7 +1,7 @@
 """
 Программа выполненая в объеме ВКР
 """
-from email import Email
+from email_ import Email
 from Check_files import CheckFiles, Distributors
 
 
