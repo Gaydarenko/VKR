@@ -2,11 +2,15 @@
 Обработка скачанных файлов, запись данных в главную таблицу и/или отчеты
 """
 import os
-import openpyxl
 import re
+
+from openpyxl import load_workbook
 
 
 class BasicTable:
+    """
+    Запись данных в главную таблицу и при необходимости в отчеты.
+    """
 
     def __init__(self, basic_table_path: str, reports_path: str, contractors_path: str):
         self.dir_path = 'email_files'       # путь к скачанным с почты файлам
@@ -15,7 +19,7 @@ class BasicTable:
         self.column_names_list = list()     # список имен столбцов
         self.downloaded_files = list()      # список скаченных файлов
         self.data_for_write_dict = dict()   # словарь данных для записи в главную таблицу
-        self.distributors = dict()          # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
+        self.distributors = dict()  # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
         self.color = None   # цвет для окрашивания яейки
         self.report = None  # текст для записи в отчет
         self.flag = None    # флаг необходимости записи в отчеты
@@ -25,11 +29,11 @@ class BasicTable:
             "Date": ["Дата", ]
         }
 
-        self.wb_basic_table = openpyxl.load_workbook(self.basic_table_path)
+        self.wb_basic_table = load_workbook(self.basic_table_path)
         self.basic_table = self.wb_basic_table.active
-        self.wb_report = openpyxl.load_workbook(self.reports_path)
+        self.wb_report = load_workbook(self.reports_path)
         self.reports_table = self.wb_report.active
-        self.wb_contractors = openpyxl.load_workbook(self.basic_table_path)
+        self.wb_contractors = load_workbook(self.basic_table_path)
         self.contractor_table = self.wb_contractors.active
 
         self.form_column_names_dict()
@@ -69,14 +73,16 @@ class BasicTable:
         Формируется словарь с данными, которые необходимо записать в главную таблицу и/или в отчеты,
          и вызывается метод записывающий эти данные.
         Если файл с данными полностью корректен, то запись производится только в главыную таблиуц.
-        В случае отсутствия столбца ИНН или некорректном значении ИНН, запись производитс только в файл отчетов.
-        В случае отсутствия каких-нибудь дрцгих необходимых данных, запись в главную таблицу производится,
-         но при этом также производится запись в файл отчетов.
+        В случае отсутствия столбца ИНН или некорректном значении ИНН,
+         запись производитс только в файл отчетов.
+        В случае отсутствия каких-нибудь дрцгих необходимых данных,
+         запись в главную таблицу производится,
+          но при этом также производится запись в файл отчетов.
         :param source_file: Строка с именем файла.
         :return: None
         """
         self.color = "FF92D050"     # светло-зелёный
-        wb_source_file = openpyxl.load_workbook(os.path.join(self.dir_path, source_file))
+        wb_source_file = load_workbook(os.path.join(self.dir_path, source_file))
         table = wb_source_file.active
         column_names = [table.cell(row=1, column=j).value for j in range(1, table.max_column + 1)]
 
@@ -133,7 +139,7 @@ class BasicTable:
     def write_to_basic_table(self, data: dict) -> None:
         """
         Производится запись данных в главную таблицу в самый конец.
-        :param data: Словарь данных для записи в основную таблицу. Ключами выступают названия столбцов.
+        :param data: Словарь данных для записи в основную таблицу (ключи - названия столбцов).
         :return: None
         """
         start_row = self.basic_table.max_row
