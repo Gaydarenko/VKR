@@ -5,12 +5,15 @@ import os.path
 import json
 # install openpyxl, pandas
 import datetime as dt
-import openpyxl
+from openpyxl import load_workbook
 
 from message_error import MessageError as Me
 
 
 class CheckFiles:
+    """
+    Получение путей и их проверка
+    """
 
     def __init__(self):
         self.paths = None
@@ -45,6 +48,9 @@ class CheckFiles:
 
 
 class Distributors:
+    """
+    Работа с файлом дистрибьютеров
+    """
 
     def __init__(self, path: str):
         self.cell = None
@@ -62,7 +68,7 @@ class Distributors:
         Получение содержимого ячейки А1 из файла формата xlsx.
         :return: None
         """
-        self.workbook = openpyxl.load_workbook(self.path)
+        self.workbook = load_workbook(self.path)
         table = self.workbook.active
         self.cell = table.cell(row=1, column=1)
 
@@ -73,7 +79,7 @@ class Distributors:
         """
         if not isinstance(self.cell.value, dt.datetime):
             Me.message_window('В файле Дистрибьютеры.xlsx в ячейке А1 '
-                              f'отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
+                              'отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
 
     def get_debtors(self) -> None:
         """
@@ -95,18 +101,21 @@ class Distributors:
         current_month = dt.date.today().month
         month_in_file = self.cell.value.month
         if month_in_file != current_month:
-            wb = openpyxl.load_workbook(self.path)
-            sheet = wb[wb.sheetnames[0]]    # получение первого листа по его имени
-            rows = sheet.max_row
-            sheet_obj = wb.active
-            for cell_row in sheet_obj["A2": f"A{rows+1}"]:
-                cell_row[0].fill.fgColor.value = '00FFFFFF'
-            wb.save(self.path)
+            wb_distributors = load_workbook(self.path)
+            distributors_table = wb_distributors.active
 
-    def set_month_in_file(self) -> None:
+            for cell_row in distributors_table["A2": f"A{distributors_table.max_row + 1}"]:
+                cell_row[0].fill.fgColor.value = '00FFFFFF'
+
+            wb_distributors.save(self.path)
+
+    @staticmethod
+    def set_month_in_file(path) -> None:
         """
         Запись текущей даты в файл.
         :return: None
         """
-        self.cell.value = dt.datetime.today()
-        self.workbook.save(self.path)
+        wb_distributor = load_workbook(path)
+        distributor_table = wb_distributor.active
+        distributor_table.cell(row=1, column=1).value = dt.datetime.today()
+        wb_distributor.save(path)

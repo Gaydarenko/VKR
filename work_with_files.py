@@ -13,17 +13,17 @@ class BasicTable:
     """
 
     def __init__(self, basic_table_path: str, reports_path: str, contractors_path: str):
-        self.dir_path = 'email_files'       # путь к скачанным с почты файлам
-        self.basic_table_path = basic_table_path    # путь к базовой таблице pearl.xlsx
-        self.reports_path = reports_path    # путь к файлу отчетов
-        self.column_names_list = list()     # список имен столбцов
-        self.downloaded_files = list()      # список скаченных файлов
-        self.data_for_write_dict = dict()   # словарь данных для записи в главную таблицу
+        self.dir_path = 'email_files'  # путь к скачанным с почты файлам
+        self.basic_table_path = basic_table_path  # путь к базовой таблице pearl.xlsx
+        self.reports_path = reports_path  # путь к файлу отчетов
+        self.column_names_list = list()  # список имен столбцов
+        self.downloaded_files = list()  # список скаченных файлов
+        self.data_for_write_dict = dict()  # словарь данных для записи в главную таблицу
         self.distributors = dict()  # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
-        self.color = None   # цвет для окрашивания яейки
+        self.color = None  # цвет для окрашивания яейки
         self.report = None  # текст для записи в отчет
-        self.flag = None    # флаг необходимости записи в отчеты
-        self.VAR_COLUMN_NAMES = {   # возможные варианты названия столбцов
+        self.flag = None  # флаг необходимости записи в отчеты
+        self.VAR_COLUMN_NAMES = {  # возможные варианты названия столбцов
             "Year": ["Год", ],
             "Month": ["Месяц", ],
             "Date": ["Дата", ]
@@ -38,8 +38,8 @@ class BasicTable:
 
         self.form_column_names_dict()
         self.get_downloaded_files()
-        self.wb_basic_table.save(r"data\pearl")     # Расширение файла не указано специально - временная мера,
-                                                    # чтобы пока не заменять исходный файл
+        self.wb_basic_table.save(r"data\pearl")  # Расширение файла не указано специально - временная мера,
+        # чтобы пока не заменять исходный файл
         self.wb_report.save(reports_path)
         self.wb_contractors.save(contractors_path)
 
@@ -81,7 +81,7 @@ class BasicTable:
         :param source_file: Строка с именем файла.
         :return: None
         """
-        self.color = "FF92D050"     # светло-зелёный
+        self.color = "FF92D050"  # светло-зелёный
         wb_source_file = load_workbook(os.path.join(self.dir_path, source_file))
         table = wb_source_file.active
         column_names = [table.cell(row=1, column=j).value for j in range(1, table.max_column + 1)]
@@ -90,7 +90,7 @@ class BasicTable:
 
             for i in range(2, table.max_row + 1):
                 data_for_write = self.data_for_write_dict.copy()
-                itn = table.cell(row=i, column=column_names.index("ИНН")+1).value
+                itn = table.cell(row=i, column=column_names.index("ИНН") + 1).value
 
                 if re.fullmatch(r'\d{10}', itn) or re.fullmatch(r'\d{12}', itn):
                     data_for_write["ИНН"] = itn
@@ -99,7 +99,7 @@ class BasicTable:
 
                     for column in data_for_write:
                         try:
-                            data_for_write[column] = table.cell(row=i, column=column_names.index(column)+1).value
+                            data_for_write[column] = table.cell(row=i, column=column_names.index(column) + 1).value
                         except ValueError:
                             data_for_write[column] = '-----'
                             self.report += f"Отсутвтвует столбец '{column}'"
@@ -115,7 +115,7 @@ class BasicTable:
                     self.distributors[source_file] = self.color
 
             if source_file not in self.distributors:
-                self.distributors[source_file] = "FF92D050"     # светло-зеленый
+                self.distributors[source_file] = "FF92D050"  # светло-зеленый
 
         else:
             self.color = "FFFF0000"  # красный
@@ -144,7 +144,7 @@ class BasicTable:
         """
         start_row = self.basic_table.max_row
         for j in range(1, len(self.column_names_list) + 1):
-            self.basic_table.cell(row=start_row + 1, column=j).value = data[self.column_names_list[j-1]]
+            self.basic_table.cell(row=start_row + 1, column=j).value = data[self.column_names_list[j - 1]]
 
     def write_to_reports(self, data: dict) -> None:
         """
@@ -155,7 +155,7 @@ class BasicTable:
         start_row = self.reports_table.max_row
         self.reports_table.cell(row=start_row + 1, column=1).value = self.report
         for j in range(1, len(self.column_names_list) + 1):
-            self.reports_table.cell(row=start_row + 1, column=j + 1).value = data[self.column_names_list[j-1]]
+            self.reports_table.cell(row=start_row + 1, column=j + 1).value = data[self.column_names_list[j - 1]]
         self.report = ""
         self.flag = None
 
