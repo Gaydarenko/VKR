@@ -65,4 +65,4 @@ class Email:
 
         for email in debtors_email:
             self.email_filter(email)
-            self.reader(email)
+            self.reader(email + ".xlsx")
