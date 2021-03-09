@@ -15,10 +15,11 @@ class BasicTable:
         self.column_names_list = list()     # список имен столбцов
         self.downloaded_files = list()      # список скаченных файлов
         self.data_for_write_dict = dict()   # словарь данных для записи в главную таблицу
+        self.distributors = dict()          # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
         self.color = None   # цвет для окрашивания яейки
         self.report = None  # текст для записи в отчет
         self.flag = None    # флаг необходимости записи в отчеты
-        self.VAR_COLUMN_NAMES = {
+        self.VAR_COLUMN_NAMES = {   # возможные варианты названия столбцов
             "Year": ["Год", ],
             "Month": ["Месяц", ],
             "Date": ["Дата", ]
@@ -88,7 +89,7 @@ class BasicTable:
                 if re.fullmatch(r'\d{10}', itn) or re.fullmatch(r'\d{12}', itn):
                     data_for_write["ИНН"] = itn
                     data_for_write["Контрагент"] = self.get_contractor_name(itn)
-                    column_names = self.check_var_column_names(column_names)
+                    column_names = self.check_var_column_names([name.capitalize() for name in column_names])
 
                     for column in data_for_write:
                         try:
@@ -105,13 +106,16 @@ class BasicTable:
                     self.color = "FFFFC000"  # оранжевый
                     self.report = "Некорректное значение ИНН"
                     self.write_to_reports(data_for_write)
+                    self.distributors[source_file] = self.color
+
+            if source_file not in self.distributors:
+                self.distributors[source_file] = "FF92D050"     # светло-зеленый
 
         else:
             self.color = "FFFF0000"  # красный
             self.report = "Отсутствует столбец ИНН"
             self.write_to_reports(self.data_for_write_dict)
-
-        # TODO закрасить дистрибьютера в какой-то цвет
+            self.distributors[source_file] = self.color
 
     def check_var_column_names(self, column_names: list) -> list:
         """

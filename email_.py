@@ -21,9 +21,10 @@ class Email:
 
         self.run(debtors_email)
 
-    def reader(self) -> None:
+    def reader(self, email: str) -> None:
         """
         Функция сохраняет прикрепленный файл на диск.
+        :param email: Строка с email, который используется как имя файла.
         :return: None
         """
         try:
@@ -32,8 +33,8 @@ class Email:
                     for attachment in message.Attachments:
                         # выявлена проблема в Outlook - прикрепленный файл имеет расширение .xlsx
                         # Это видно в любом браузере, но в Outlook он имеет расширение .xls_
-                        new_filename = attachment.FileName[:-1] + 'x'  # временная заплатка
-                        path = os.path.join(os.getcwd(), self.output_dir, new_filename)
+                        # new_filename = attachment.FileName[:-1] + 'x'  # временная заплатка
+                        path = os.path.join(os.getcwd(), self.output_dir, email)
                         attachment.SaveAsFile(path)
                 except Exception as except_:
                     print("Ошибка на этапе сохранения файла - " + str(except_))
@@ -64,4 +65,4 @@ class Email:
 
         for email in debtors_email:
             self.email_filter(email)
-            self.reader()
+            self.reader(email)
