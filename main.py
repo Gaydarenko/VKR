@@ -3,6 +3,7 @@
 """
 from email_ import Email
 from Check_files import CheckFiles, Distributors
+from work_with_files import BasicTable
 
 
 checks = CheckFiles()   # получение путей и проверка наличия необходимых файлов
@@ -12,3 +13,4 @@ debtors = distributors.debtors  # формирование списка инте
 # print(debtors)
 email = Email(debtors)  # скачивание прикрепленных файлов
 distributors.set_month_in_file()    # запись в файл текущей даты
+
