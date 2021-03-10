@@ -6,6 +6,9 @@ from sys import exit as sys_exit
 
 
 class MessageError:
+    """
+    Выод сообщения об ошибке
+    """
 
     # def __init__(self, text: str):
     #     self.text = text
@@ -25,12 +28,19 @@ class MessageError:
 
 
 class ProgressReport:
+    """
+    Формирование и вывод сообщения для пользователя по итогам текущего месяца.
+    """
 
     def __init__(self, data: dict):
         self.data = data
         self.progress_window()
 
-    def progress_window(self):
+    def progress_window(self) -> None:
+        """
+        Вывод окна с переданными данными.
+        :return: None
+        """
         window = tk.Tk()
         window.title("Обобщенная информация")
         label = tk.Label(text="За текущий месяц:")
