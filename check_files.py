@@ -53,11 +53,14 @@ class Distributors:
     """
 
     def __init__(self, path: str):
-        self.cell = None
+        self.date_in_file = None
         self.month = None
         self.debtors = []
-        self.workbook = None
+        # self.workbook = None
         self.path = path
+        self.wb_distributors = None
+        self.distributors_table = None
+
         self.get_cell_a1()
         self.is_valid_data_cell()
         self.check_month_in_file()
@@ -68,16 +71,16 @@ class Distributors:
         Получение содержимого ячейки А1 из файла формата xlsx.
         :return: None
         """
-        self.workbook = load_workbook(self.path)
-        table = self.workbook.active
-        self.cell = table.cell(row=1, column=1)
+        self.wb_distributors = load_workbook(self.path)
+        self.distributors_table = self.wb_distributors.active
+        self.date_in_file = self.distributors_table.cell(row=1, column=1)
 
     def is_valid_data_cell(self) -> None:
         """
         Проверка первой ячейки таблицы. Содержимое ячейки должно быть в формате даты.
         :return: None
         """
-        if not isinstance(self.cell.value, dt.datetime):
+        if not isinstance(self.date_in_file.value, dt.datetime):
             Me.message_window('В файле Дистрибьютеры.xlsx в ячейке А1 '
                               'отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
 
@@ -87,10 +90,9 @@ class Distributors:
         Критерием является незакрашенность ячейки с именем дистрибьютера.
         :return: None
         """
-        for row in self.workbook["Sheet"].iter_rows(min_row=2, min_col=2, max_col=2):
-            # print(f"{row[0].fill.fgColor.value} - {row[0].value}")
-            if row[0].fill.fgColor.value in ["00FFFFFF", "00000000", 0]:
-                self.debtors.append(row[0].value)
+        for i in range(2, self.distributors_table.max_row + 1):
+            if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:
+                self.debtors.append(self.distributors_table.cell(row=i, column=2).value)
 
     def check_month_in_file(self) -> None:
         """
@@ -99,15 +101,16 @@ class Distributors:
         :return: None
         """
         current_month = dt.date.today().month
-        month_in_file = self.cell.value.month
+        month_in_file = self.date_in_file.value.month
         if month_in_file != current_month:
-            wb_distributors = load_workbook(self.path)
-            distributors_table = wb_distributors.active
+            # wb_distributors = load_workbook(self.path)
+            # distributors_table = wb_distributors.active
 
-            for cell_row in distributors_table["A2": f"A{distributors_table.max_row + 1}"]:
+            for cell_row in self.distributors_table["A2": f"A{self.distributors_table.max_row + 1}"]:
+                # print(cell_row[0])
                 cell_row[0].fill.fgColor.value = '00FFFFFF'
 
-            wb_distributors.save(self.path)
+            self.wb_distributors.save(self.path)
 
     @staticmethod
     def set_month_in_file(path) -> None:

@@ -12,3 +12,4 @@ debtors = distributors.debtors  # формирование списка инте
 # print(debtors)
 email = Email(debtors)  # скачивание прикрепленных файлов
 Distributors.set_month_in_file(distributor_path)  # запись в файл текущей даты
+basic_table = BasicTable(checks.paths)
