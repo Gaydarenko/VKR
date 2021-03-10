@@ -7,7 +7,7 @@ import json
 import datetime as dt
 from openpyxl import load_workbook
 
-from message_error import MessageError as Me
+from message_for_user import MessageError as Me
 
 
 class CheckFiles:
@@ -58,9 +58,16 @@ class Distributors:
         self.debtors = []
         # self.workbook = None
         self.path = path
-        self.wb_distributors = None
-        self.distributors_table = None
+        self.wb_distributors = load_workbook(self.path)
+        self.distributors_table = self.wb_distributors.active
 
+        self.basic_run()
+
+    def basic_run(self) -> None:
+        """
+        Порядок запуска методов при основном обращении
+        :return: None
+        """
         self.get_cell_a1()
         self.is_valid_data_cell()
         self.check_month_in_file()
@@ -71,8 +78,6 @@ class Distributors:
         Получение содержимого ячейки А1 из файла формата xlsx.
         :return: None
         """
-        self.wb_distributors = load_workbook(self.path)
-        self.distributors_table = self.wb_distributors.active
         self.date_in_file = self.distributors_table.cell(row=1, column=1)
 
     def is_valid_data_cell(self) -> None:
@@ -116,9 +121,45 @@ class Distributors:
     def set_month_in_file(path) -> None:
         """
         Запись текущей даты в файл.
+        :param path: путь к файлу с таблицей дистрибьютеров
         :return: None
         """
         wb_distributor = load_workbook(path)
         distributor_table = wb_distributor.active
         distributor_table.cell(row=1, column=1).value = dt.datetime.today()
         wb_distributor.save(path)
+
+    @staticmethod
+    def form_status_data(path: str) -> dict:
+        """
+        Формирование словаря с данными о ходе выполнения общей задачи.
+        :param path: путь к файлу с таблицей дистрибьютеров
+        :return: словарь с данными
+        """
+        statuses = ["не прислали доклад",
+                    "доклад без замечаний",
+                    "требует участия человека",
+                    "некорретных докладов",
+                    "невозможно определить статус",
+                    "Всего"]
+        progress = {status: 0 for status in statuses}
+
+        wb_distributor = load_workbook(path)
+        distributor_table = wb_distributor.active
+
+        for i in range(2, distributor_table.max_row + 1):
+            color = distributor_table.cell(row=i, column=1).fill.fgColor.value
+            if color in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:
+                status = 0
+            elif color in ["FF92D050", ]:
+                status = 1
+            elif color in ["FFFFC000", ]:
+                status = 2
+            elif color in ["FFFF0000", ]:
+                status = 3
+            else:
+                status = 4
+            progress[statuses[status]] += 1
+
+        progress[statuses[5]] = distributor_table.max_row - 1
+        return progress
