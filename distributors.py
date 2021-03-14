@@ -105,13 +105,13 @@ class Distributors:
 
         for i in range(2, distributor_table.max_row + 1):
             color = distributor_table.cell(row=i, column=1).fill.fgColor.value
-            if color in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:
+            if color in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:    # белый цвет
                 status = 0
-            elif color in ["FF92D050", ]:
+            elif color in ["FF92D050", ]:   # светло-зелёный
                 status = 1
-            elif color in ["FFFFC000", ]:
+            elif color in ["FFFFC000", ]:   # оранжевый
                 status = 2
-            elif color in ["FFFF0000", ]:
+            elif color in ["FFFF0000", ]:   # красный
                 status = 3
             else:
                 status = 4

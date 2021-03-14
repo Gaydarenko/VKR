@@ -1,11 +1,12 @@
 """
 Работа с электронной почтой посредством Outlook.
 """
-# install pywin32
 import os
 import datetime as dt
 from shutil import rmtree
 import win32com.client
+
+from message_for_user import MessageError as Me
 
 
 class Email:
@@ -38,8 +39,10 @@ class Email:
                         attachment.SaveAsFile(path)
                 except Exception as except_:
                     print("Ошибка на этапе сохранения файла - " + str(except_))
+                    Me.message_window("Ошибка во время работы с email на этапе сохранения файла")
         except Exception as except_:
-            print("Ошибка на этапе обработки email - " + str(except_))
+            print("Ошибка на этапе обработки писем - " + str(except_))
+            Me.message_window("Ошибка во время работы с email на этапе обработки писем")
 
     def email_filter(self, debtor_email: str) -> None:
         """

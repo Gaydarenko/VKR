@@ -1,5 +1,5 @@
 """
-Всё для вывода сообщений с ошибками
+Всё для вывода сообщений пользователю.
 """
 import tkinter as tk
 from sys import exit as sys_exit
