@@ -2,5 +2,7 @@
 "Distributors": "data\\Дистрибьюторы.xlsx",
 "Contractors": "data\\Контрагенты.xlsx",
 "Reports": "data\\Отчеты.xlsx",
-"Database": "data\\pearl.xlsx"
+"Database": "data\\pearl.xlsx",
+"basic_tables_archive": "data\\archive\\basic_tables\\",
+"sales_representatives_archive": "data\\archive\\sales_representatives\\"
 }

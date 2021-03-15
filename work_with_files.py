@@ -21,7 +21,7 @@ class BasicTable:
         self.column_names_list = list()  # список имен столбцов
         self.downloaded_files = list()  # список скаченных файлов
         self.data_for_write_dict = dict()  # словарь данных для записи в главную таблицу
-        self.distributors = dict()  # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
+        self.distributor_color = dict()  # словарь дистрибьютеров с указанием цвета для закрашивания ячейки
         self.color = None  # цвет для окрашивания яейки
         self.report = str()  # текст для записи в отчет
         self.flag = False  # флаг необходимости записи в отчеты
@@ -47,14 +47,13 @@ class BasicTable:
         """
         self.form_column_names_dict()
         self.work_with_downloaded_files()
-        self.wb_basic_table.save(r"data\pearl")  # Расширение файла не указано специально - временная мера,
-                                                    # чтобы пока не заменять исходный файл
+        self.wb_basic_table.save(self.basic_table_path)
         self.wb_report.save(self.reports_path)
         self.wb_contractors.save(self.contractors_path)
 
     def form_column_names_dict(self) -> None:
         """
-        Формирование словаря с названиями столбуов таблицы кроме столбцов ИНН и Контрагент
+        Формирование словаря с названиями столбцов таблицы кроме столбцов ИНН и Контрагент
          (по ним отдельная расширенная проверка).
         Далее копия этого словаря будет использоваться для формирования набора данных.
          для записи в главную таблицу.
@@ -71,11 +70,15 @@ class BasicTable:
         Перебираются все скачанные файлы.
         Для каждого файла запускается метод формирования набора данных
          для записи в главную таблицу (form_data_for_basic_table).
+        И формируется словарь, на основании которого
+         будет производится закрашивание файла Дистрибьютеры.xlsx
         :return: None
         """
         self.downloaded_files = list(os.walk(self.dir_path))[0][2]
         for file in self.downloaded_files:
+            self.color = "FF92D050"  # светло-зелёный
             self.form_data_for_basic_table(file)
+            self.distributor_color[file[:file.rfind(".")]] = self.color
 
     def form_data_for_basic_table(self, source_file: str) -> None:
         """
@@ -90,7 +93,6 @@ class BasicTable:
         :param source_file: Строка с именем файла.
         :return: None
         """
-        self.color = "FF92D050"  # светло-зелёный
         wb_source_file = load_workbook(os.path.join(self.dir_path, source_file))
         table = wb_source_file.active
         column_names = [table.cell(row=1, column=j).value.upper() for j in range(1, table.max_column + 1)]
@@ -122,16 +124,11 @@ class BasicTable:
                     data_for_write["Контрагент"] = "-----"
                     self.report = "Некорректное значение ИНН"
                     self.write_to_reports(data_for_write)
-                    self.distributors[source_file] = self.color
-
-            if source_file not in self.distributors:
-                self.distributors[source_file] = "FF92D050"  # светло-зеленый
 
         else:
             self.color = "FFFF0000"  # красный
             self.report = "Отсутствует столбец ИНН"
             self.write_to_reports(self.data_for_write_dict)
-            self.distributors[source_file] = self.color
 
     def check_var_column_names(self, column_names: list) -> list:
         """

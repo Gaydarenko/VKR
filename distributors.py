@@ -1,8 +1,12 @@
 """
 Работа с файлом дистрибьютеров
 """
+import os
+import shutil
 import datetime as dt
+
 from openpyxl import load_workbook
+from openpyxl.styles import PatternFill
 
 from message_for_user import MessageError as Me
 
@@ -11,12 +15,13 @@ class Distributors:
     """
     Работа с файлом дистрибьютеров
     """
-
-    def __init__(self, path: str):
+    def __init__(self, path: dict):
         self.date_in_file = None
         self.month = None
         self.debtors = []
-        self.path = path
+        self.path = path["Distributors"]
+        self.basic_table_path = path["Database"]
+        self.basic_table_archive_path = path["basic_tables_archive"]
         self.wb_distributors = load_workbook(self.path)
         self.distributors_table = self.wb_distributors.active
 
@@ -61,15 +66,18 @@ class Distributors:
     def check_month_in_file(self) -> None:
         """
         Сравнение указанного в файле месяца с текущим.
-        Если не совпадает, то закрасить весь файл в белый
+        Если не совпадает, то базовая таблица копируется в архив
+         и весь файл дистрибьюторов закрашивается в белый.
         :return: None
         """
         current_month = dt.date.today().month
         month_in_file = self.date_in_file.value.month
         if month_in_file != current_month:
+            self.basic_table_to_archive()
 
-            for cell_row in self.distributors_table["A2": f"A{self.distributors_table.max_row + 1}"]:
-                cell_row[0].fill.fgColor.value = '00FFFFFF'
+            for i in range(2, self.distributors_table.max_row + 1):
+                for j in range(1, self.distributors_table.max_column + 1):
+                    self.distributors_table.cell(row=i, column=j).fill.fgColor.value = "00FFFFFF"
 
             self.wb_distributors.save(self.path)
 
@@ -119,3 +127,29 @@ class Distributors:
 
         progress[statuses[5]] = distributor_table.max_row - 1
         return progress
+
+    def basic_table_to_archive(self) -> None:
+        """
+        Копирование файла базовой таблицы в папку с архивными версиями
+        :return: None
+        """
+        filename = f"pearl_{self.date_in_file.value.year}_{self.date_in_file.value.month}.xlsx"
+        path = os.path.join(self.basic_table_archive_path, filename)
+        shutil.copyfile(self.basic_table_path, path)
+
+    @staticmethod
+    def coloring(path: str, colors: dict) -> None:
+        """
+        Метод производит изменение цвета заливки для указаных дистрибьютеров
+        :param path: путь к файлу с таблицей дистрибьютеров
+        :param colors: Словарь цветового статуса для дистрибьютеров
+        :return:
+        """
+        wb_distributor = load_workbook(path)
+        distributor_table = wb_distributor.active
+        for i in range(2, distributor_table.max_row + 1):
+            distr = distributor_table.cell(row=i, column=2).value
+            if distr in colors:
+                distributor_table.cell(row=i, column=1).fill = PatternFill(fgColor=colors[distr], fill_type="solid")
+                distributor_table.cell(row=i, column=2).fill = PatternFill(fgColor=colors[distr], fill_type="solid")
+        wb_distributor.save(path)
