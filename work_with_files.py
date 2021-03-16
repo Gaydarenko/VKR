@@ -3,9 +3,14 @@
 """
 import os
 import re
+import shutil
 
-from openpyxl import load_workbook
+from datetime import datetime as dt
+
+from openpyxl import load_workbook, Workbook
 from openpyxl.styles import PatternFill
+
+from message_for_user import MessageError as Me
 
 
 class BasicTable:
@@ -191,3 +196,50 @@ class BasicTable:
         self.report = "Обнаружен новый контрагент; "
         self.flag = True
         return "-----"
+
+    @staticmethod
+    def form_report_for_sr(paths: dict, status_data: dict) -> None:
+        """
+        Проверка окончания отчетности в текущем месяце,
+         перенос файлов для торговых представителей в архив
+          и сохдание новых актуальных для них таблиц
+        :param paths: Словарь с путями к ключевым файлам
+        :param status_data: Словарь статусов
+        :return: None
+        """
+        if status_data["доклад без замечаний"] != status_data["Всего"]:
+            return None
+
+        src = paths["sales_representatives"]
+        dst = paths["sales_representatives_archive"]
+        cart = dict()
+        for file in list(os.walk(src))[0][2]:   # перенос всех докладов в архив
+            filename = f"{file}_{dt.now().year}_{dt.now().month}.xlsx"
+            shutil.move(os.path.join(src, file), os.path.join(dst, filename))
+
+        wb_basic_table = load_workbook(paths["Database"])
+        basic_table = wb_basic_table.active
+
+        col = 0
+        for j in range(1, basic_table.max_column + 1):
+            if basic_table.cell(row=1, column=j).value == "KAM":
+                col = j
+                break
+
+        if col == 0:
+            Me.message_window("В базовой таблице не столбца 'КАМ'")
+
+        for i in range(2, basic_table.max_row + 1):
+            row = [cell.value for cell in basic_table[i]]
+            value = basic_table.cell(row=i, column=col).value
+            try:
+                cart[value].append(row)
+            except KeyError:
+                cart[value] = [row, ]
+
+        for s_r in cart: # s_r - sales representatives
+            wb = Workbook()
+            ws = wb.active
+            for row in cart[s_r]:
+                ws.append(row)
+            wb.save(os.path.join(src, f"{s_r}.xlsx"))
