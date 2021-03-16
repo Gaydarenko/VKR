@@ -213,7 +213,7 @@ class BasicTable:
         src = paths["sales_representatives"]
         dst = paths["sales_representatives_archive"]
         cart = dict()
-        for file in list(os.walk(src))[0][2]:   # перенос всех докладов в архив
+        for file in list(os.walk(src))[0][2]:  # перенос всех докладов в архив
             filename = f"{file}_{dt.now().year}_{dt.now().month}.xlsx"
             shutil.move(os.path.join(src, file), os.path.join(dst, filename))
 
@@ -237,15 +237,19 @@ class BasicTable:
             except KeyError:
                 cart[value] = [row, ]
 
-        for s_r in cart:    # s_r - sales representatives
+        for s_r in cart:  # s_r - sales representatives
             wb = Workbook()
             ws = wb.active
             for row in cart[s_r]:
                 ws.append(row)
             wb.save(os.path.join(src, f"{s_r}.xlsx"))
+        return None  # Чтобы pylint не ругался
 
 
 class OtherFiles:
+    """
+    Для работы с файлами, не требующими сложной обработки.
+    """
 
     @staticmethod
     def sales_representatives(path: str, filename: str) -> str or None:

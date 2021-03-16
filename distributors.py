@@ -15,6 +15,7 @@ class Distributors:
     """
     Работа с файлом дистрибьютеров
     """
+
     def __init__(self, path: dict):
         self.date_in_file = None
         self.month = None
@@ -60,7 +61,8 @@ class Distributors:
         :return: None
         """
         for i in range(2, self.distributors_table.max_row + 1):
-            if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:
+            if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0,
+                                                                                    "FFFFFFFF"]:
                 self.debtors.append(self.distributors_table.cell(row=i, column=2).value)
 
     def check_month_in_file(self) -> None:
@@ -113,13 +115,13 @@ class Distributors:
 
         for i in range(2, distributor_table.max_row + 1):
             color = distributor_table.cell(row=i, column=1).fill.fgColor.value
-            if color in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:    # белый цвет
+            if color in ["00FFFFFF", "00000000", 0, "FFFFFFFF"]:  # белый цвет
                 id_status = 0
-            elif color in ["FF92D050", ]:   # светло-зелёный
+            elif color in ["FF92D050", ]:  # светло-зелёный
                 id_status = 1
-            elif color in ["FFFFC000", ]:   # оранжевый
+            elif color in ["FFFFC000", ]:  # оранжевый
                 id_status = 2
-            elif color in ["FFFF0000", ]:   # красный
+            elif color in ["FFFF0000", ]:  # красный
                 id_status = 3
             else:
                 id_status = 4
@@ -150,6 +152,6 @@ class Distributors:
         for i in range(2, distributor_table.max_row + 1):
             distr = distributor_table.cell(row=i, column=2).value
             if distr in colors:
-                distributor_table.cell(row=i, column=1).fill = PatternFill(fgColor=colors[distr], fill_type="solid")
-                distributor_table.cell(row=i, column=2).fill = PatternFill(fgColor=colors[distr], fill_type="solid")
+                for j in range(1, 3):
+                    distributor_table.cell(row=i, column=j).fill = PatternFill(fgColor=colors[distr], fill_type="solid")
         wb_distributor.save(path)

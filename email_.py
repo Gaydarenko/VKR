@@ -11,6 +11,9 @@ from work_with_files import OtherFiles
 
 
 class Email:
+    """
+    Работа с электронными письмами.
+    """
 
     def __init__(self, debtors_email):
         self.outlook = win32com.client.Dispatch("outlook.application").GetNamespace("MAPI")
@@ -33,9 +36,6 @@ class Email:
             for message in list(self.messages):
                 try:
                     for attachment in message.Attachments:
-                        # выявлена проблема в Outlook - прикрепленный файл имеет расширение .xlsx
-                        # Это видно в любом браузере, но в Outlook он имеет расширение .xls_
-                        # new_filename = attachment.FileName[:-1] + 'x'  # временная заплатка
                         path = os.path.join(os.getcwd(), self.output_dir, email)
                         attachment.SaveAsFile(path)
                 except Exception as except_:
@@ -90,6 +90,3 @@ class Email:
                 mail.Subject = "Доклад за прошлый месяц."
                 mail.Attachments.Add(os.path.join(os.getcwd(), path, file))
                 mail.Save()
-
-
-
