@@ -7,15 +7,16 @@ from shutil import rmtree
 import win32com.client
 
 from message_for_user import MessageError as Me
+from work_with_files import OtherFiles
 
 
 class Email:
 
     def __init__(self, debtors_email):
-        self.outlook = win32com.client.Dispatch('outlook.application').GetNamespace("MAPI")
+        self.outlook = win32com.client.Dispatch("outlook.application").GetNamespace("MAPI")
         self.inbox = self.outlook.GetDefaultFolder(6)
         self.messages = None
-        self.output_dir = 'email_files'  # название папки для скачанных файлов
+        self.output_dir = "email_files"  # название папки для скачанных файлов
 
         received_dt = dt.datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         self.received_dt = received_dt.strftime("%m/%d/%Y %H:%M %p")
@@ -69,3 +70,26 @@ class Email:
         for email in debtors_email:
             self.email_filter(email)
             self.reader(email + ".xlsx")
+
+    @staticmethod
+    def sender(paths: dict) -> None:
+        """
+        Формирование писем в черновиках с прикрепленными файлами.
+        :param paths:
+        :return:
+        """
+        path = paths["sales_representatives"]
+        path_kam = paths["KAM"]
+        files = list(os.walk(path))[0][2]
+        for file in files:
+            recipient = OtherFiles.sales_representatives(path_kam, file)
+            if recipient:
+                outlook = win32com.client.Dispatch("outlook.application")
+                mail = outlook.CreateItem(0)
+                mail.To = recipient
+                mail.Subject = "Доклад за прошлый месяц."
+                mail.Attachments.Add(os.path.join(os.getcwd(), path, file))
+                mail.Save()
+
+
+

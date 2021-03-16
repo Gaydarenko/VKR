@@ -17,5 +17,6 @@ basic_table = BasicTable(checks.paths)  # запись данных в базо�
 colors = basic_table.distributor_color  # получение словаря цветовых статусов для дистрибьютеров
 Distributors.coloring(distributor_path, colors)     # изменение цвета заливки для указаных дистрибьютеров
 status_data = Distributors.form_status_data(distributor_path)   # получение словаря с данными о ходе выполнения общей задачи
-BasicTable.form_report_for_sr(checks.paths, status_data)    #
-message = ProgressReport(status_data)
+BasicTable.form_report_for_sr(checks.paths, status_data)    # формирование докладов для торговых представителей
+Email.sender(checks.paths)  # подготовка черновиков с прикрепленными докладами для торговых представителей
+message = ProgressReport(status_data)   # вывод окна с информацией о прогрессе за текущий месяц

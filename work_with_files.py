@@ -202,7 +202,7 @@ class BasicTable:
         """
         Проверка окончания отчетности в текущем месяце,
          перенос файлов для торговых представителей в архив
-          и сохдание новых актуальных для них таблиц
+          и создание новых актуальных для файлов.
         :param paths: Словарь с путями к ключевым файлам
         :param status_data: Словарь статусов
         :return: None
@@ -237,9 +237,34 @@ class BasicTable:
             except KeyError:
                 cart[value] = [row, ]
 
-        for s_r in cart: # s_r - sales representatives
+        for s_r in cart:    # s_r - sales representatives
             wb = Workbook()
             ws = wb.active
             for row in cart[s_r]:
                 ws.append(row)
             wb.save(os.path.join(src, f"{s_r}.xlsx"))
+
+
+class OtherFiles:
+
+    @staticmethod
+    def sales_representatives(path: str, filename: str) -> str or None:
+        """
+        Получение email из базы торговых представителей по его имени (имя файла).
+        :param path: Путь к базе торговых представителей
+        :param filename: Имя файла
+        :return: Строка с email или None
+        """
+        wb = load_workbook(path)
+        ws = wb.active
+        r_s = filename[:filename.rfind(".")]
+        for row in ws:
+            if row[0].value == r_s:
+                return row[1].value
+
+        note = [r_s, "необходимо добавить"]
+        ws.append(note)
+        row = ws.max_row
+        for j in range(1, 3):
+            ws.cell(row=row, column=j).fill = PatternFill(fgColor="FFFF0000", fill_type="solid")
+        return None
