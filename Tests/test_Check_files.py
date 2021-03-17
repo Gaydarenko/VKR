@@ -55,16 +55,28 @@ FILES = {
 
 
 def create_data_txt() -> None:
+    """
+    Создание файла Data.txt в формате json.
+    :return: None
+    """
     with open("Data.txt", "w", encoding="utf-8") as file:
         json.dump(BASIC_DATA, file, ensure_ascii=False, indent=0)
 
 
 def create_data_txt_no_json() -> None:
+    """
+    Создание файла Data.txt c данными в формате строки.
+    :return: None
+    """
     with open("Data.txt", "w", encoding="utf-8") as file:
         file.write(str(BASIC_DATA))
 
 
 def create_data_files() -> None:
+    """
+    Создание всех необходимых для работв приложения ключевых файлов.
+    :return: None
+    """
     if not os.path.exists('data'):
         os.mkdir("data")
         for key in FILES:
@@ -79,11 +91,19 @@ def create_data_files() -> None:
 
 
 def rm_data_txt() -> None:
+    """
+    Удаление файла Data.txt
+    :return: None
+    """
     if os.path.exists("Data.txt"):
         os.remove("Data.txt")
 
 
 def rm_all_data() -> None:
+    """
+    Удаление с содержимым папок data и to_send.
+    :return: None
+    """
     if os.path.exists("data"):
         shutil.rmtree("data")
     if os.path.exists("to_send"):
@@ -91,6 +111,10 @@ def rm_all_data() -> None:
 
 
 def save_data() -> None:
+    """
+    Перемещение ключевых данных во временную папку для сохранности во время тестов.
+    :return: None
+    """
     os.mkdir("Tests/temp")
     shutil.move("Data.txt", "Tests/temp/Data.txt")
     shutil.move("data", "Tests/temp/data")
@@ -98,6 +122,10 @@ def save_data() -> None:
 
 
 def load_data() -> None:
+    """
+    Перемещение ключевых данных из временной папки после тестов.
+    :return: None
+    """
     shutil.move("Tests/temp/Data.txt", "Data.txt")
     shutil.move("Tests/temp/data", "data")
     shutil.move("Tests/temp/to_send", "to_send")
@@ -105,8 +133,15 @@ def load_data() -> None:
 
 
 class TestsCheckFiles(unittest.TestCase):
+    """
+    Тестирование различных модулей приложения.
+    """
 
-    def test_get_paths(self):
+    def test_get_paths(self) -> None:
+        """
+        Тест метода get_path
+        :return: None
+        """
         os.chdir("..")
         save_data()
 
@@ -126,6 +161,12 @@ class TestsCheckFiles(unittest.TestCase):
             print(paths)
         rm_data_txt()
 
+    def test_check_files(self) -> None:
+        """
+        Тест метода check_files.
+         + тест метода get_path при условии корретности данных.
+        :return:
+        """
         create_data_txt()
         create_data_files()
         check = Cf()
