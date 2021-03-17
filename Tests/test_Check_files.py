@@ -1,50 +1,138 @@
 import unittest
-from shutil import copyfile, rmtree, move
+import shutil
 from openpyxl import load_workbook, Workbook
-import pandas as pd
 import random
 import datetime as dt
 import json
 import os
 import time
+import sys
 
-from Check_files import CheckFiles as Cf
-
-
-BASIC_DATA = {"Distributors": r"data\Дистрибьюторы.xlsx",
-              "Contractors": r"data\Контрагенты.xlsx",
-              "Reports": r"data\Отчеты.xlsx",
-              "Database": r"data\pearl.xlsx"}
+from check_files import CheckFiles as Cf
 
 
-def create_files_for_test():
-    try:
-        os.mkdir('data')
-    except OSError:
-        print('Не удалось создать директорию data')
-    for key in BASIC_DATA:
-        wb = Workbook()
-        wb.save(BASIC_DATA[key])
+BASIC_DATA = {
+    "Distributors": "data\\Дистрибьюторы.xlsx",
+    "Contractors": "data\\Контрагенты.xlsx",
+    "Reports": "data\\Отчеты.xlsx",
+    "Database": "data\\pearl.xlsx",
+    "KAM": "data\\Торговые_представители.xlsx",
+    "basic_tables_archive": "data\\archive\\basic_tables\\",
+    "sales_representatives_archive": "data\\archive\\sales_representatives\\",
+    "sales_representatives": "to_send\\"
+}
+
+DISTRIBUTORS = [[dt.datetime.now(), ],
+                ["Азазель",	"azazelik@mail.ru"],
+                ["Гайдаренко Е.Г.", "gaydarenko@mail.ru"],
+                ["Жена", "wife@love.me"],
+                ["Кот и кошка", "cat@112.55"],
+                ["Мама", "mother@family.com"],
+                ["Папа", "father@google.com"]]
+
+CONTRACTORS = [["Контрагент", "Дистрибьютор", "ДистрибьютерРегион", "Регион", "Федеральный округ", "ИНН", "Class", "ID"],
+               ["АНРО", "Анима", "Санкт-Петербург г", "РФ", "Северо-Запад", "6802420243", "D", "2"],
+               ["ВетТрейд", "Мурманская станция", "Мурманская обл", "РФ", "Северо-Запад", "6802420244", "С", "1"]]
+
+REPORTS = [["Report", "Year", "Month", "Date", "Контрагент", "Дистрибьютор", "ДистрибьютерРегион", "Регион", "Федеральный округ", "ИНН", "Vet Category DHP", "Vet Category Bravecto", "Pet Category Value", "Адрес", "Сеть", "Clients_Type", "СББЖ", "KAM", "IFP", "UIN", "GPF", "Type", "Sum-количествоОборот", "Sum-Дозы", "Sum-СтоимостьБезНДСОборот1"], ]
+
+SALES_REPRESENTATIVES = [["KAM", "email"],
+                         ["Ivanov", "azazelik@mail.ru"],
+                         ["Pugach", "gaydarenko@mail.ru"],
+                         ["Kucc", "gaydarenko@mail.ru"]]
+
+BASIC_TABLE = [["Year", "Month", "Date", "Контрагент", "Дистрибьютор", "ДистрибьютерРегион", "Регион", "Федеральный округ", "ИНН", "Vet Category DHP", "Vet Category Bravecto", "Pet Category Value", "Адрес", "Сеть", "Clients_Type", "СББЖ", "KAM", "IFP", "UIN", "GPF", "Type", "Sum-количествоОборот", "Sum-Дозы", "Sum-СтоимостьБезНДСОборот1"],
+               ["2016", "12", "2016-12", "АНРО", "Анима", "Санкт-Петербург г", "РФ", "Северо-Запад", "6802420243", "D", "2", "3", "Санкт-Петербург, Грибалевой 7", "АнимаТрейд", "Vet", "Прочие", "Pugach", "Nobivac Rabies 10x1ds", 	"153698", "Rabies (Alu)", "Bio", "0.5", "5", "375"],
+               ["2016", "12", "2016-12", "ВетТрейд", "Мурманская станция", "Мурманская обл", "РФ", "Северо-Запад", "6802420244", "С", "1", "1", "Мурманск, Грибалевой 8", "Прочие", "Pet", "СББЖ", "Pugach", "Vasotop P 0.625mg 3x28tab", "153699", "Vasotop", "Pharma", "1", "3", "375"]]
+
+FILES = {
+    "Distributors": DISTRIBUTORS,
+    "Contractors": CONTRACTORS,
+    "Reports": REPORTS,
+    "Database": BASIC_TABLE,
+    "KAM": SALES_REPRESENTATIVES,
+}
 
 
-def del_files_after_test():
-    rmtree('data')
+def create_data_txt() -> None:
+    with open("Data.txt", "w", encoding="utf-8") as file:
+        json.dump(BASIC_DATA, file, ensure_ascii=False, indent=0)
+
+
+def create_data_txt_no_json() -> None:
+    with open("Data.txt", "w", encoding="utf-8") as file:
+        file.write(str(BASIC_DATA))
+
+
+def create_data_files() -> None:
+    if not os.path.exists('data'):
+        os.mkdir("data")
+        for key in FILES:
+            wb = Workbook()
+            ws = wb.active
+            for row in FILES[key]:
+                ws.append(row)
+            wb.save(BASIC_DATA[key])
+        os.makedirs(BASIC_DATA["basic_tables_archive"])
+        os.makedirs(BASIC_DATA["sales_representatives_archive"])
+        os.makedirs(BASIC_DATA["sales_representatives"])
+
+
+def rm_data_txt() -> None:
+    if os.path.exists("Data.txt"):
+        os.remove("Data.txt")
+
+
+def rm_all_data() -> None:
+    if os.path.exists("data"):
+        shutil.rmtree("data")
+    if os.path.exists("to_send"):
+        shutil.rmtree("to_send")
+
+
+def save_data() -> None:
+    os.mkdir("Tests/temp")
+    shutil.move("Data.txt", "Tests/temp/Data.txt")
+    shutil.move("data", "Tests/temp/data")
+    shutil.move("to_send", "Tests/temp/to_send")
+
+
+def load_data() -> None:
+    shutil.move("Tests/temp/Data.txt", "Data.txt")
+    shutil.move("Tests/temp/data", "data")
+    shutil.move("Tests/temp/to_send", "to_send")
+    shutil.rmtree("Tests/temp")
 
 
 class TestsCheckFiles(unittest.TestCase):
 
     def test_get_paths(self):
-        create_files_for_test()
-        move('../Data.txt', 'data/')
+        os.chdir("..")
+        save_data()
 
-        # test = Cf()
-        # self.assertRaises(FileNotFoundError, test.get_paths())
+        # файл не существует и переменная не определена
+        rm_data_txt()
+        with self.assertRaises(SystemExit):
+            check = Cf()
+        with self.assertRaises(UnboundLocalError):
+            print(check)
 
-        # with open('../Data.txt', 'w', encoding='utf-8') as file:
-        #     file.write('Testing.')
-        # self.assertRaises(json.decoder.JSONDecodeError, test.get_paths())
+        # данные в файле не в формте json
+        create_data_txt_no_json()
 
-        move('data/Data.txt', '../')
-        # del_files_after_test()
+        with self.assertRaises(SystemExit):
+            paths = Cf()
+        with self.assertRaises(UnboundLocalError):
+            print(paths)
+        rm_data_txt()
+
+        create_data_txt()
+        create_data_files()
+        check = Cf()
+        self.assertEqual(check.paths, BASIC_DATA)
+        rm_data_txt()
+        rm_all_data()
+
+        load_data()
 
 
