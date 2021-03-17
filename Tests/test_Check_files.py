@@ -9,6 +9,7 @@ import time
 import sys
 
 from check_files import CheckFiles as Cf
+from distributors import Distributors as Distr
 
 
 BASIC_DATA = {
@@ -136,30 +137,38 @@ class TestsCheckFiles(unittest.TestCase):
     """
     Тестирование различных модулей приложения.
     """
+    # def init(self):
+    #     self.start()
+    #     self.test_get_paths()
+    #     self.test_check_files()
+    #     self.test_get_cell_a1()
+    #     self.finish()
 
-    def test_get_paths(self) -> None:
-        """
-        Тест метода get_path
-        :return: None
-        """
-        os.chdir("..")
+    def start(self):
         save_data()
+        os.chdir("..")
 
-        # файл не существует и переменная не определена
-        rm_data_txt()
-        with self.assertRaises(SystemExit):
-            check = Cf()
-        with self.assertRaises(UnboundLocalError):
-            print(check)
-
-        # данные в файле не в формте json
-        create_data_txt_no_json()
-
-        with self.assertRaises(SystemExit):
-            paths = Cf()
-        with self.assertRaises(UnboundLocalError):
-            print(paths)
-        rm_data_txt()
+    # def test_get_paths(self) -> None:
+    #     """
+    #     Тест метода get_path
+    #     :return: None
+    #     """
+    #     # файл не существует и переменная не определена
+    #     rm_data_txt()
+    #     with self.assertRaises(SystemExit):
+    #         check = Cf()
+    #     with self.assertRaises(UnboundLocalError):
+    #         print(check)
+    #
+    #     # данные в файле не в формте json
+    #     create_data_txt_no_json()
+    #
+    #     with self.assertRaises(SystemExit):
+    #         paths = Cf()
+    #     with self.assertRaises(UnboundLocalError):
+    #         print(paths)
+    #     rm_data_txt()
+    #     print("1")
 
     def test_check_files(self) -> None:
         """
@@ -169,11 +178,25 @@ class TestsCheckFiles(unittest.TestCase):
         """
         create_data_txt()
         create_data_files()
-        check = Cf()
-        self.assertEqual(check.paths, BASIC_DATA)
+        self.check = Cf()
+        self.assertEqual(self.check.paths, BASIC_DATA)
+        print("2")
+
+
+    def test_get_cell_a1(self) -> None:
+        """
+        Проверка методов get_cell_a1 и is_valid_data_cell.
+        :return: None
+        """
+        a = Distr(BASIC_DATA)
+        self.assertTrue(isinstance(a.date_in_file.value, dt.datetime))
+        print("3")
+
+    def finish(self):
         rm_data_txt()
         rm_all_data()
-
         load_data()
 
 
+if __name__ == '__main__':
+    unittest.main()
