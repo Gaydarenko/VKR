@@ -1,7 +1,9 @@
+import os
 import unittest
 
 from check_files import CheckFiles as Cf
-from Tests.data_for_tests import *
+from Tests.data_for_tests import BASIC_DATA, create_data_txt, create_data_txt_no_json,\
+    create_data_files, rm_data_txt, rm_all_data, save_data, load_data
 
 
 class TestsCheckFiles(unittest.TestCase):
