@@ -61,9 +61,9 @@ class Distributors:
          и весь файл дистрибьюторов закрашивается в белый.
         :return: None
         """
-        current_month = dt.date.today().month
-        month_in_file = self.date_in_file.value.month
-        if month_in_file != current_month:
+        today = dt.date.today()
+        dt_current_month = dt.datetime(today.year, today.month, 1)
+        if self.date_in_file.value < dt_current_month:
             self.basic_table_to_archive()
 
             for i in range(2, self.distributors_table.max_row + 1):
