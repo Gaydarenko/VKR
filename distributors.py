@@ -54,17 +54,6 @@ class Distributors:
             Me.message_window('В файле Дистрибьютеры.xlsx в ячейке А1 '
                               'отсутствует дата в нужном формате (ДД.ММ.ГГГГ).')
 
-    def get_debtors(self) -> None:
-        """
-        Формирование списка "должников".
-        Критерием является незакрашенность ячейки с именем дистрибьютера.
-        :return: None
-        """
-        for i in range(2, self.distributors_table.max_row + 1):
-            if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0,
-                                                                                    "FFFFFFFF"]:
-                self.debtors.append(self.distributors_table.cell(row=i, column=2).value)
-
     def check_month_in_file(self) -> None:
         """
         Сравнение указанного в файле месяца с текущим.
@@ -82,6 +71,17 @@ class Distributors:
                     self.distributors_table.cell(row=i, column=j).fill.fgColor.value = "00FFFFFF"
 
             self.wb_distributors.save(self.path)
+
+    def get_debtors(self) -> None:
+        """
+        Формирование списка "должников".
+        Критерием является незакрашенность ячейки с именем дистрибьютера.
+        :return: None
+        """
+        for i in range(2, self.distributors_table.max_row + 1):
+            if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0,
+                                                                                    "FFFFFFFF"]:
+                self.debtors.append(self.distributors_table.cell(row=i, column=2).value)
 
     @staticmethod
     def set_month_in_file(path) -> None:

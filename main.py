@@ -8,10 +8,10 @@ from work_with_files import BasicTable
 from message_for_user import ProgressReport
 
 checks = CheckFiles()  # получение путей и проверка наличия необходимых файлов
-distributor_path = checks.paths['Distributors']  # получение пути к файлу с информацией о дистрибьюторам
 distributors = Distributors(checks.paths)  # анализ содержимого фйла с информацией о дистрибьютерах
 debtors = distributors.debtors  # формирование списка интересующих дистрибьютеров
 email = Email(debtors)  # скачивание прикрепленных файлов
+distributor_path = checks.paths['Distributors']  # получение пути к файлу с информацией о дистрибьюторам
 Distributors.set_month_in_file(distributor_path)  # запись в файл текущей даты
 basic_table = BasicTable(checks.paths)  # запись данных в базовую таблицу и в отчеты
 colors = basic_table.distributor_color  # получение словаря цветовых статусов для дистрибьютеров
