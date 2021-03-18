@@ -2,7 +2,7 @@ import os
 import unittest
 
 from check_files import CheckFiles as Cf
-from Tests.data_for_tests import BASIC_DATA, create_data_txt, create_data_txt_no_json,\
+from Tests.data_for_tests import PATHS, create_data_txt, create_data_txt_no_json,\
     create_data_files, rm_data_txt, rm_all_data, save_data, load_data
 
 
@@ -15,14 +15,15 @@ class TestsCheckFiles(unittest.TestCase):
     #     self.test_check_files()
     #     self.finish()
 
-    def start(self) -> None:
+    @classmethod
+    def setUpClass(cls) -> None:
         """
         Перенос ключевых файлов в безопасное место
          и формирование замены этих файлов стестовыми данными.
         :return: None
         """
-        save_data()
         os.chdir("..")
+        save_data()
         print("c0")
 
     # После выполнения конкретно этого метода работа класса заканчивается несмотря даже на init.
@@ -57,10 +58,11 @@ class TestsCheckFiles(unittest.TestCase):
         create_data_txt()
         create_data_files()
         self.check = Cf()
-        self.assertEqual(self.check.paths, BASIC_DATA)
+        self.assertEqual(self.check.paths, PATHS)
         print("c2")
 
-    def finish(self) -> None:
+    @classmethod
+    def tearDownClass(cls) -> None:
         """
         Удаление тестовых файлов и перемещение обратно рабочих файлов.
         :return: None

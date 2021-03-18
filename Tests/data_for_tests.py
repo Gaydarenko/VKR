@@ -5,7 +5,7 @@ from openpyxl import Workbook
 import datetime as dt
 
 
-BASIC_DATA = {
+PATHS = {
     "Distributors": "data\\Дистрибьюторы.xlsx",
     "Contractors": "data\\Контрагенты.xlsx",
     "Reports": "data\\Отчеты.xlsx",
@@ -54,7 +54,7 @@ def create_data_txt() -> None:
     :return: None
     """
     with open("Data.txt", "w", encoding="utf-8") as file:
-        json.dump(BASIC_DATA, file, ensure_ascii=False, indent=0)
+        json.dump(PATHS, file, ensure_ascii=False, indent=0)
 
 
 def create_data_txt_no_json() -> None:
@@ -63,7 +63,7 @@ def create_data_txt_no_json() -> None:
     :return: None
     """
     with open("Data.txt", "w", encoding="utf-8") as file:
-        file.write(str(BASIC_DATA))
+        file.write(str(PATHS))
 
 
 def create_data_files() -> None:
@@ -78,10 +78,10 @@ def create_data_files() -> None:
             ws = wb.active
             for row in FILES[key]:
                 ws.append(row)
-            wb.save(BASIC_DATA[key])
-        os.makedirs(BASIC_DATA["basic_tables_archive"])
-        os.makedirs(BASIC_DATA["sales_representatives_archive"])
-        os.makedirs(BASIC_DATA["sales_representatives"])
+            wb.save(PATHS[key])
+        os.makedirs(PATHS["basic_tables_archive"])
+        os.makedirs(PATHS["sales_representatives_archive"])
+        os.makedirs(PATHS["sales_representatives"])
 
 
 def rm_data_txt() -> None:
@@ -109,7 +109,7 @@ def save_data() -> None:
     Перемещение ключевых данных во временную папку для сохранности во время тестов.
     :return: None
     """
-    os.mkdir("Tests/temp")
+    os.makedirs("Tests/temp")
     shutil.move("Data.txt", "Tests/temp/Data.txt")
     shutil.move("data", "Tests/temp/data")
     shutil.move("to_send", "Tests/temp/to_send")
