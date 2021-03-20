@@ -10,9 +10,6 @@ class MessageError:
     Выод сообщения об ошибке
     """
 
-    # def __init__(self, text: str):
-    #     self.text = text
-
     @staticmethod
     def message_window(text):
         """
@@ -32,11 +29,8 @@ class ProgressReport:
     Формирование и вывод сообщения для пользователя по итогам текущего месяца.
     """
 
-    def __init__(self, data: dict):
-        self.data = data
-        self.progress_window()
-
-    def progress_window(self) -> None:
+    @staticmethod
+    def progress_window(data) -> None:
         """
         Вывод окна с переданными данными.
         :return: None
@@ -45,8 +39,8 @@ class ProgressReport:
         window.title("Обобщенная информация")
         label = tk.Label(text="За текущий месяц:")
         label.pack(padx=10, anchor='w')
-        for status in self.data:
-            percent = round(self.data[status] / self.data['Всего'] * 100, 2)
-            label = tk.Label(text=f"   - {status}: {self.data[status]} ({percent}%)")
+        for status in data:
+            percent = round(data[status] / data['Всего'] * 100, 2)
+            label = tk.Label(text=f"   - {status}: {data[status]} ({percent}%)")
             label.pack(padx=15, anchor="w")
         window.mainloop()

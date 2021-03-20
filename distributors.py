@@ -57,7 +57,7 @@ class Distributors:
     def check_month_in_file(self) -> None:
         """
         Сравнение указанного в файле месяца с текущим.
-        Если не совпадает, то базовая таблица копируется в архив
+        Если не совпадает, то основная таблица копируется в архив
          и весь файл дистрибьюторов закрашивается в белый.
         :return: None
         """
@@ -80,7 +80,7 @@ class Distributors:
         """
         for i in range(2, self.distributors_table.max_row + 1):
             if self.distributors_table.cell(row=i, column=1).fill.fgColor.value in ["00FFFFFF", "00000000", 0,
-                                                                                    "FFFFFFFF"]:
+                                                                                    "FFFFFFFF", "FFFF0000"]:
                 self.debtors.append(self.distributors_table.cell(row=i, column=2).value)
 
     @staticmethod
@@ -105,7 +105,7 @@ class Distributors:
         statuses = ["не прислали доклад",
                     "доклад без замечаний",
                     "требует участия человека",
-                    "некорретных докладов",
+                    "некорректных докладов",
                     "невозможно определить статус",
                     "Всего"]
         progress = {status: 0 for status in statuses}
@@ -132,7 +132,7 @@ class Distributors:
 
     def basic_table_to_archive(self) -> None:
         """
-        Копирование файла базовой таблицы в папку с архивными версиями
+        Копирование файла основной таблицы в папку с архивными версиями
         :return: None
         """
         filename = f"pearl_{self.date_in_file.value.year}_{self.date_in_file.value.month}.xlsx"
